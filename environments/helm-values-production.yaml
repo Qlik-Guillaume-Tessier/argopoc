@@ -5,7 +5,7 @@
 kubeVersion: ""
 ## @param nameOverride String to partially override sealed-secrets.fullname
 ##
-nameOverride: ""
+nameOverride: "prod"
 ## @param fullnameOverride String to fully override sealed-secrets.fullname
 ##
 fullnameOverride: ""
