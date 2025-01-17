@@ -5,10 +5,10 @@
 kubeVersion: ""
 ## @param nameOverride String to partially override sealed-secrets.fullname
 ##
-nameOverride: "stage"
+nameOverride: ""
 ## @param fullnameOverride String to fully override sealed-secrets.fullname
 ##
-fullnameOverride: ""
+fullnameOverride: "stage"
 ## @param namespace Namespace where to deploy the Sealed Secrets controller
 ##
 namespace: ""
