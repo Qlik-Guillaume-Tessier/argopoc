@@ -1,12 +1,36 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: ApplicationSet
 metadata:
-  name: engineering-dev-guestbook
+  name: guestbook
 spec:
-  source:
-    repoURL: https://github.com/infra-team/cluster-deployments.git
-    targetRevision: HEAD
-    path: guestbook/engineering-dev
-  destination:
-    server: https://1.2.3.4
-    namespace: guestbook
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - list:
+      elements:
+      - env: stage
+      - env: prod
+  template:
+    metadata:
+      name: 'sealed-secrets-{{.env}}'
+      namespace: argocd
+    spec:
+      project: default
+      syncPolicy:
+        automated:
+          prune: true
+      sources:
+      - chart: sealed-secrets
+        repoURL: https://bitnami-labs.github.io/sealed-secrets
+        targetRevision: 2.16.2
+        helm:
+          releaseName: sealed-secrets-stage
+          valueFiles:
+          - '$values/apps/kubeseal/environments/helm-values-{{.env}}.yaml'
+      - repoURL: 'https://github.com/Qlik-Guillaume-Tessier/argopoc.git'
+        targetRevision: main
+        ref: values
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: 'sealed-secret-{{.env}}'
+
