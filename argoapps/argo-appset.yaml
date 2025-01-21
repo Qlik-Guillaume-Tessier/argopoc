@@ -24,7 +24,7 @@ spec:
         repoURL: https://bitnami-labs.github.io/sealed-secrets
         targetRevision: 2.16.2
         helm:
-          releaseName: sealed-secrets-stage
+          releaseName: 'sealed-secrets-{{.env}}'
           valueFiles:
           - '$values/apps/kubeseal/environments/helm-values-{{.env}}.yaml'
       - repoURL: 'https://github.com/Qlik-Guillaume-Tessier/argopoc.git'
