@@ -1,0 +1,12 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: engineering-dev-guestbook
+spec:
+  source:
+    repoURL: https://github.com/infra-team/cluster-deployments.git
+    targetRevision: HEAD
+    path: guestbook/engineering-dev
+  destination:
+    server: https://1.2.3.4
+    namespace: guestbook
