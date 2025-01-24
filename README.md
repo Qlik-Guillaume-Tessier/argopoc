@@ -13,3 +13,11 @@ add `KUBE_CONFIG=` before this string
 
 ## Run
 run : `act --secret-file $HOME/kubeconfig.env`
+
+# Quick ArgoCD CLI commands
+
+`argocd relogin`
+
+`argocd app list`
+`argocd appset list`
+
