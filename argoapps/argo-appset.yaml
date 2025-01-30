@@ -1,18 +1,24 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: kubeseal
+  name: myapps
 spec:
   goTemplate: true
   goTemplateOptions: ["missingkey=error"]
   generators:
   - list:
       elements:
-      - env: stage
-      - env: prod
+      - appName: sealed-secrets
+        helmChartUrl: https://bitnami-labs.github.io/sealed-secrets
+        namespace: sealed-secrets
+        helmChartVersion: 2.16.2
+      - appName: redis
+        helmChartUrl: registry-1.docker.io/bitnamicharts
+        namespace: redis
+        helmChartVersion: 20.6.2
   template:
     metadata:
-      name: 'sealed-secrets-{{.env}}'
+      name: '{{.appName}}'
       namespace: argocd
     spec:
       project: default
@@ -20,17 +26,18 @@ spec:
         automated:
           prune: true
       sources:
-      - chart: sealed-secrets
-        repoURL: https://bitnami-labs.github.io/sealed-secrets
-        targetRevision: 2.16.2
+      - chart: '{{.appName}}'
+        repoURL: '{{.helmChartUrl}}'
+        targetRevision: '{{.helmChartVersion}}'
         helm:
-          releaseName: 'sealed-secrets-{{.env}}'
+          releaseName: '{{.appName}}'
           valueFiles:
-          - '$values/apps/kubeseal/environments/helm-values-{{.env}}.yaml'
+          - '$values/apps/{{.appName}}/environments/helm-values-stage.yaml'
+      
       - repoURL: 'https://github.com/Qlik-Guillaume-Tessier/argopoc.git'
-        targetRevision: main
+        targetRevision: develop
         ref: values
       destination:
         server: "https://kubernetes.default.svc"
-        namespace: 'sealed-secret-{{.env}}'
+        namespace: 'stage'
 
